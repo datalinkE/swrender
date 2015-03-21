@@ -1,7 +1,7 @@
 SYSCONF_LINK = g++
-CPPFLAGS     =
-LDFLAGS      =
-LIBS         = -lm
+CPPFLAGS     = -pg
+LDFLAGS      = -pg
+LIBS         = -L/usr/lib -lm -lprofiler
 
 DESTDIR = ./
 TARGET  = swrender
@@ -10,7 +10,7 @@ OBJECTS := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
 all: $(DESTDIR)$(TARGET)
 	@echo "running"
-	$(DESTDIR)$(TARGET)
+	time $(DESTDIR)$(TARGET)
 	@echo "done"
 
 $(DESTDIR)$(TARGET): $(OBJECTS)
