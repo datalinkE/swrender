@@ -1,5 +1,7 @@
 #include <vector>
+#include <algorithm>
 #include <cmath>
+#include <iostream>
 #include "draw.h"
 
 Draw::Draw(TGAImage* image)
@@ -63,24 +65,27 @@ void Draw::triangle(Point p0, Point p1, Point p2)
     int halfw = mImage->get_width() / 2;
     int halfh = mImage->get_height() / 2;
 
-    float len = std::abs(points[2].x - points[0].x);
-    float he = points[2].y - points[0].y;
-    float alpha = ((he + 1) * halfh) / ((len + 1) * halfw);
+    float len = points[2].x - points[0].x;
+    float a =  (points[2].y - points[0].y) / len;
+    float b = (points[0].y * points[2].x - points[2].y * points[0].x) / len;
 
     auto callback = [&](int x, int y, TGAColor c)
     {
-        int start = std::min(points[0].x, points[1].x);
-        int stop = x;
+        float lineY = x * a + b;
+        int start = y;
+        int stop = lineY + halfh;
+
         if (start > stop) std::swap(start, stop);
 
-        for (int i = start; i < stop; i++) {
-            int j = std::min(y, int(points[0].y * halfh + alpha * (points[0].x * halfw + x)));
-            this->mImage->set(i, j, c);
+        for (int j = start; j < stop; j++) {
+
+            this->mImage->set(x, j, c);
         }
         return true;
     };
 
     Draw::line(halfw * (1 + points[0].x), halfh * (1 + points[0].y), cyan, halfw * (1 + points[1].x), halfh * (1 + points[1].y), cyan, callback);
+    Draw::line(halfw * (1 + points[1].x), halfh * (1 + points[1].y), cyan, halfw * (1 + points[2].x), halfh * (1 + points[2].y), cyan, callback);
 
     Draw::line(p0, p1);
     Draw::line(p1, p2);
