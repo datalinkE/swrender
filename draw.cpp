@@ -66,8 +66,12 @@ void Draw::triangle(Point p0, Point p1, Point p2)
     int halfh = mImage->get_height() / 2;
 
     float len = points[2].x - points[0].x;
-    float a =  (points[2].y - points[0].y) / len;
-    float b = (points[0].y * points[2].x - points[2].y * points[0].x) / len;
+    float a = 1;
+    float b = 0;
+    if ( len != 0.0 ) {
+        a =  (points[2].y - points[0].y) / len;
+        b = (points[0].y * points[2].x - points[2].y * points[0].x) / len;
+    }
 
     auto callback = [&](int x, int y, TGAColor c)
     {
