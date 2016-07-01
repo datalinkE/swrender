@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <memory>
+#include <cmath>
 #include "model.h"
 #include "draw.h"
 
@@ -19,27 +20,51 @@
 const char* PROFILER_OUT = "./profiler.out";
 const char* IMAGE_OUT = "./output.tga";
 const char* DEFAULT_OBJ_IN = "./obj/african_head/african_head.obj";
+const float PI = 3.14f;
+
+void roundTest(Draw* draw)
+{
+    for (float i = 0; i < (PI * 2); i+= ( PI / 6)) {
+	float r = 0.9f;
+	draw->triangle(Point{0 ,0, red},
+		Point{r * (float)cos( i ),  r * (float)sin( i ), red},
+		Point{r * (float)cos( i + 0.1f),  r * (float)sin( i + 0.1f), red});
+    }
+}
+
+void test(Draw* draw)
+{
+    draw->segment(Point{-1, 0, red}, Point {1, 0, cyan});
+    draw->segment(Point{0, -1, green}, Point{0, 1, green});
+    //draw->triangle(Point{0.66 ,1, white}, Point{0.5, 0.2, white}, Point{-1, 0, white});
+
+    /* draw->triangle(Point{-1 , 0.5, white}, Point{0, 0.5, white}, Point{1, 0.5, white}); */
+    /* draw->triangle(Point{-1 ,0.5, cyan}, Point{0, 0.5, cyan}, Point{0, 0.5, cyan}); */
+    /* draw->triangle(Point{0 ,0.5, red}, Point{0, 0.5, red}, Point{0, 0.5, red}); */
+    /* draw->triangle(Point{-0.5 ,0.5, red}, Point{-0.5, 0, red}, Point{0, 0, red}); */
+    draw->triangle(Point{0.66 ,1, red}, Point{0.5, -0.2, red}, Point{-0.8, 0.1, red});
+    roundTest(draw);
+}
 
 void payload(Draw* draw, Model* model)
 {
-	draw->line(Point{-1, 0, red}, Point {1, 0, red});
-	draw->line(Point{0, -1, green}, Point{0, 1, green});
-	draw->triangle(Point{0.66 ,1, white}, Point{0.5, 0.2, white}, Point{-1, 0, white});
-
 	for (int n=0; n < model->nfaces(); ++n)
 	{
-		std::vector<int> vertIds = model->face(n);
-		auto p0 = Point { model->vert(vertIds[0]).x, model->vert(vertIds[0]).y, white };
-		auto p1 = Point { model->vert(vertIds[1]).x, model->vert(vertIds[1]).y, white };
-		auto p2 = Point { model->vert(vertIds[2]).x, model->vert(vertIds[2]).y, white };
+	    std::vector<int> vertIds = model->face(n);
 
-		std::cout << p0.x << " " << p0.y << " "
-			<< p0.x << " " << p0.y << " "
-			<< p0.x << " " << p0.y << std::endl;
+	    auto p0 = Point { model->vert(vertIds[0]).x, model->vert(vertIds[0]).y, red };
+	    auto p1 = Point { model->vert(vertIds[1]).x, model->vert(vertIds[1]).y, red };
+	    auto p2 = Point { model->vert(vertIds[2]).x, model->vert(vertIds[2]).y, red };
 
-		draw->line(p0, p1);
-		draw->line(p1, p2);
-		draw->line(p2, p0);
+	    std::cout << p0.x << " " << p0.y << " "
+		    << p0.x << " " << p0.y << " "
+		    << p0.x << " " << p0.y << std::endl;
+
+	    draw->triangle(p0, p1, p2);
+
+	    draw->segment(p0, p1);
+	    draw->segment(p1, p2);
+	    draw->segment(p2, p0);
 	}
 }
 
