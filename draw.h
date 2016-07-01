@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <functional>
 #include "tgaimage.h"
+#include "geometry.h"
 
 const TGAColor white  = TGAColor(255, 255, 255, 255);
 const TGAColor red    = TGAColor(255, 0,   0,   255);
@@ -10,8 +11,9 @@ const TGAColor cyan   = TGAColor(0, 255,   255, 100);
 
 struct Point
 {
-    double x;
-    double y;
+    Vec3f v;
+    //double x;
+    //double y;
     TGAColor c;
 };
 
@@ -28,7 +30,7 @@ class Draw
 public:
     Draw(TGAImage* image);
 
-    static void segment(int x0, int y0,
+    static void screenSegment(int x0, int y0,
                      const TGAColor &c0,
                      int x1, int y1,
                      const TGAColor &c1,
@@ -37,7 +39,9 @@ public:
     void segment(Point p0, Point p1);
     void triangle(Point p0, Point p1, Point p2);
 
-    Line getLine(Point p0, Point p1);
+    Vec2i fromWorld(Vec3f worldP);
+
+    Line getScreenLine(Point p0, Point p1);
 
     void done(const char* output_file);
 
